@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Babushka</title>
+
+    <header>
+
+        <h1></h1>
+        <nav>
+            <button class="menu-item" data-kategori="alle">Alle</button>
+            <button class="menu-item" data-kategori="forretter">Forret</button>
+            <button class="menu-item" data-kategori="hovedretter">Hovedret</button>
+            <button class="menu-item" data-kategori="desserter">Dessert</button>
+            <button class="menu-item" data-kategori="drikkevarer">Drikkevarer</button>
+
+        </nav>
+
+    </header>
+
+    <style>
+        body {
+            background-color: rgb(240, 240, 240);
+        }
+
+        article {
+            padding: 1em;
+            background-color: white;
+        }
+
+        .data-container article img {
+            width: 100%;
+        }
+
+        .data-container {
+            margin: 0 auto;
+            display: grid;
+        }
+
+        @media screen and (min-width:580px) {
+            .data-container {
+                padding-left: 10%;
+                padding-right: 10%;
+                grid-gap: 5px;
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+
+        #modal {
+
+            background-color: rgba(0, 0, 0, .7);
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            text-align: center;
+            display: none;
+
+        }
+
+        #modal-content {
+            width: 70vw;
+            height: 90vh;
+            margin: auto;
+            background-color: rgba(250, 250, 250, 1);
+        }
+
+        #modal .vis {
+
+            display: block;
+            opacity: 1;
+            pointer-events: all;
+    </style>
+</head>
+
+<body>
+    <section id="modal">
+        <button>Close</button>
+        <div id="modal-content">
+            <h2 class="modal-navn"></h2>
+            <img class="modal-billede" src="" alt="">
+        </div>
+
+    </section>
+    <main class="container">
+        <section class="data-container"></section>
+    </main>
+    <template class="data-template">
+        <article class="menu">
+            <h2></h2>
+            <img src="" alt=""><br>
+
+            <span class="data-kortbeskrivelse"></span><br>
+            Pris: <span class="data-pris"></span><br>
+
+        </article>
+    </template>
+
+    <script>
+        let modal = document.querySelector("#modal");
+        let dest = document.querySelector(".data-container"),
+            retter,
+            kategoriFilter = "alle";
+
+        document.addEventListener("DOMContentLoaded", hentJson);
+
+        async function hentJson() {
+            let myJson = await fetch("menu.json");
+            retter = await myJson.json();
+
+            visRetter();
+        }
+
+        document.querySelectorAll(".menu-item").forEach(knap => {
+
+            knap.addEventListener("click", filtrering)
+        });
+
+        function filtrering() {
+            dest.textContent = "";
+            kategoriFilter = this.getAttribute("data-kategori");
+            visRetter();
+        }
+
+        function visRetter() {
+            let dest = document.querySelector(".data-container"),
+                temp = document.querySelector(".data-template");
+
+            //løb personlisten igennem og lav en klon
+            retter.forEach(ret => {
+
+                if (ret.kategori == kategoriFilter || kategoriFilter == "alle") {
+
+                    let klon = temp.cloneNode(true).content;
+                    //indsæt data i klonen
+
+                    klon.querySelector("h2").textContent = ret.navn;
+                    klon.querySelector("img").src = "/imgs/small/" + ret.billede + "-sm.jpg";
+                    klon.querySelector(".data-pris").textContent = retter.pris;
+                    klon.querySelector(".data-kortbeskrivelse").textContent = retter.kortbeskrivelse;
+                    klon.querySelector("img").addEventListener("click", () => {
+                        visModal();
+                    });
+
+                    //  klon.querySelector(".data-kategori").textContent = retter.kategori;
+
+
+                    //placer klon i DOM
+                    dest.appendChild(klon);
+                }
+            })
+        }
+
+        function visModal(ret) {
+            modal.classList.add("vis");
+            modal.querySelector(".modal-navn").textContent = ret.navn;
+            modal.querySelector(".modal-billede").src = ret.billede;
+
+        }
+
+        function skjulModal() {
+            modal.classList.remove("vis");
+        }
+    </script>
+</body>
+
+</html>
