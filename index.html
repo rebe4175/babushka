@@ -1,27 +1,124 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
     <title>Babushka</title>
+
 
     <header>
 
-        <h1></h1>
         <nav>
+
             <button class="menu-item" data-kategori="alle">Alle</button>
-            <button class="menu-item" data-kategori="forretter">Forret</button>
-            <button class="menu-item" data-kategori="hovedretter">Hovedret</button>
-            <button class="menu-item" data-kategori="desserter">Dessert</button>
+
+            <button class="menu-item" data-kategori="forretter">Forretter</button>
+
+            <button class="menu-item" data-kategori="hovedretter">Hovedretter</button>
+
+            <button class="menu-item" data-kategori="desserter">Desserter</button>
+
             <button class="menu-item" data-kategori="drikkevarer">Drikkevarer</button>
+
+            <h2>Menu</h2>
 
         </nav>
 
     </header>
 
     <style>
+        nav {
+            text-align: center;
+        }
+
+        button {
+            background-color: red;
+            border: none;
+            color: white;
+            padding: 3vh 3vh;
+            font-size: 1.3em;
+            margin-bottom: 1vh;
+            margin-top: 1vh;
+
+        }
+
+        img:hover {
+
+            cursor: pointer;
+            width: 100%;
+            opacity: 1;
+            transition: .5s ease;
+
+
+        }
+
+        img {
+            display: block;
+            width: 100%;
+            height: auto;
+            opacity: 0.5;
+        }
+
+
+        button:hover {
+            background-color: white;
+            color: blue;
+            border: none;
+            padding: 3vh 3vh;
+            font-size: 1.3em;
+            ;
+            transition: .2s;
+            margin-bottom: 1vh;
+            margin-top: 1vh;
+            cursor: pointer;
+
+        }
+
         body {
             background-color: rgb(240, 240, 240);
+
+        }
+
+        h2 {
+
+            color: darkred;
+            font-family: sans-serif;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        h1 {
+
+            color: darkred;
+            font-family: sans-serif;
+            text-align: center;
+            font-size: 1.5em;
+        }
+
+
+        .data-pris {
+            font-family: sans-serif;
+            font-size: 1em;
+
+        }
+
+        p {
+            font-family: sans-serif;
+
+        }
+
+        .data-kortbeskrivelse {
+            font-family: sans-serif;
+            font-size: 1em;
+
+        }
+
+        .modal-langbeskrivelse {
+            font-family: sans-serif;
+            font-size: 1.3em;
+
         }
 
         article {
@@ -40,13 +137,12 @@
 
         @media screen and (min-width:580px) {
             .data-container {
-                padding-left: 10%;
-                padding-right: 10%;
-                grid-gap: 5px;
+                padding-left: 7%;
+                padding-right: 7%;
+                grid-gap: 2vw;
                 grid-template-columns: repeat(3, 1fr);
             }
         }
-
 
         #modal {
 
@@ -56,45 +152,90 @@
             position: fixed;
             text-align: center;
             display: none;
+            overflow: scroll;
+            top: 0.00001vw;
+            opacity: 1;
+            pointer-events: none;
+            transition: 1s;
 
         }
+
+        #modal img {
+
+            width: px;
+            align-content: center;
+        }
+
 
         #modal-content {
-            width: 70vw;
-            height: 90vh;
+            width: 75vw;
+            height: 80vh;
             margin: auto;
             background-color: rgba(250, 250, 250, 1);
+            padding: 2vh;
         }
 
-        #modal .vis {
+        #modal.vis {
 
             display: block;
             opacity: 1;
+            z-index: 10;
             pointer-events: all;
+            transition: 0.5s;
+        }
+
+        #modal img {
+            max-height: 50%;
+            object-fit: scale-down;
+            opacity: 1;
+            cursor: auto;
+
+        }
+
+        .modal-pris {
+
+            font-size: 1em;
+            font-family: sans-serif;
+        }
     </style>
 </head>
 
 <body>
+
     <section id="modal">
         <button>Close</button>
-        <div id="modal-content">
-            <h2 class="modal-navn"></h2>
+        <div id="modal-content"> <br>
+            <h1 class="modal-navn"></h1>
+            <br>
+            <span class="modal-id"></span>
+            <span class="modal-kategori"></span>
+            <span class="modal-langbeskrivelse"></span>
+            <br>
+            <br>
+            <p> Pris: </p><span class="modal-pris"></span> kr.
+            <br>
+
+            <br>
             <img class="modal-billede" src="" alt="">
         </div>
-
     </section>
+
+
     <main class="container">
         <section class="data-container"></section>
     </main>
-    <template class="data-template">
-        <article class="menu">
-            <h2></h2>
-            <img src="" alt=""><br>
 
+    <template class="data-template">
+
+        <article class="menu">
+
+            <h1></h1>
+            <img src="" alt=""><br>
             <span class="data-kortbeskrivelse"></span><br>
-            Pris: <span class="data-pris"></span><br>
+            Pris: <span class="data-pris"></span> kr.<br>
 
         </article>
+
     </template>
 
     <script>
@@ -102,6 +243,7 @@
         let dest = document.querySelector(".data-container"),
             retter,
             kategoriFilter = "alle";
+
 
         document.addEventListener("DOMContentLoaded", hentJson);
 
@@ -113,9 +255,9 @@
         }
 
         document.querySelectorAll(".menu-item").forEach(knap => {
-
             knap.addEventListener("click", filtrering)
         });
+
 
         function filtrering() {
             dest.textContent = "";
@@ -127,24 +269,23 @@
             let dest = document.querySelector(".data-container"),
                 temp = document.querySelector(".data-template");
 
+
             //løb personlisten igennem og lav en klon
             retter.forEach(ret => {
 
                 if (ret.kategori == kategoriFilter || kategoriFilter == "alle") {
-
                     let klon = temp.cloneNode(true).content;
                     //indsæt data i klonen
 
-                    klon.querySelector("h2").textContent = ret.navn;
+
+                    klon.querySelector("h1").textContent = ret.navn;
                     klon.querySelector("img").src = "/imgs/small/" + ret.billede + "-sm.jpg";
-                    klon.querySelector(".data-pris").textContent = retter.pris;
-                    klon.querySelector(".data-kortbeskrivelse").textContent = retter.kortbeskrivelse;
                     klon.querySelector("img").addEventListener("click", () => {
-                        visModal();
+                        visModal(ret);
                     });
-
-                    //  klon.querySelector(".data-kategori").textContent = retter.kategori;
-
+                    // klon.querySelector(".data-kategori").textContent = ret.kategori;
+                    klon.querySelector(".data-pris").textContent = ret.pris;
+                    klon.querySelector(".data-kortbeskrivelse").textContent = ret.kortbeskrivelse;
 
                     //placer klon i DOM
                     dest.appendChild(klon);
@@ -152,17 +293,25 @@
             })
         }
 
-        function visModal(ret) {
-            modal.classList.add("vis");
-            modal.querySelector(".modal-navn").textContent = ret.navn;
-            modal.querySelector(".modal-billede").src = ret.billede;
 
+        function visModal(retten) {
+            modal.classList.add("vis");
+            //            modal.querySelector(".modal-id").textContent = retten.id;
+            //            modal.querySelector(".modal-kategori").textContent = retten.kategori;
+            modal.querySelector(".modal-navn").textContent = retten.navn;
+            modal.querySelector(".modal-langbeskrivelse").textContent = retten.langbeskrivelse;
+            modal.querySelector(".modal-pris").textContent = retten.pris;
+
+            modal.querySelector(".modal-billede").src = "imgs/medium/" + retten.billede + "-md.jpg";
+            modal.querySelector(".modal-billede").alt = "Foto af" + retten.billede;
+            modal.querySelector("button").addEventListener("click", skjulModal);
         }
 
         function skjulModal() {
             modal.classList.remove("vis");
         }
     </script>
+
 </body>
 
 </html>
